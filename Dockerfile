@@ -48,14 +48,12 @@ ENV NVM_DIR=/home/frappe/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install 16.15.0
 RUN . "$NVM_DIR/nvm.sh" && nvm use v16.15.0
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v16.15.0
-RUN cd /home/frappe && bench init --frappe-branch version-14 frappe-bench
-RUN cd /home/frappe/frappe-bench && bench get-app erpnext https://github.com/frappe/erpnext.git --branch version-14
-WORKDIR /home/frappe/frappe-bench
 USER root
-COPY start_services.sh /home
-RUN chmod 777 /home/start_services.sh
 RUN apt-get update && apt-get install -y expect
+COPY start_services.sh /home
 COPY mysql_secure_installation.sh /home
-RUN chmod 777 /home/mysql_secure_installation.sh
+COPY auth1.sh /home
+COPY auth2.sh /home
+RUN chmod 777 /home/*
 CMD /home/start_services.sh
 EXPOSE 3306 8000
